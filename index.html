@@ -1,244 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Macro Tracker</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <title>Kcal & Macro Planner</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="app-header">
-    <h1>Macro Tracker</h1>
-    <p id="daily-status-banner">Daily macro progress will appear here.</p>
-  </header>
+  <h1>Kcal & Macro Planner</h1>
 
-  <main class="container">
-    <!-- Daily Targets -->
-    <section class="card">
-      <h2>Daily Target Goals</h2>
-      <div class="targets-grid">
-        <div class="target-item">
-          <label>Energy (kcal)</label>
-          <input type="number" id="target-energy" value="1700" />
-          <div class="progress">
-            <div class="progress-bar" id="progress-energy"></div>
-          </div>
-          <span class="progress-label" id="label-energy"></span>
-        </div>
-        <div class="target-item">
-          <label>Protein (g)</label>
-          <input type="number" id="target-protein" value="120" step="0.1" />
-          <div class="progress">
-            <div class="progress-bar" id="progress-protein"></div>
-          </div>
-          <span class="progress-label" id="label-protein"></span>
-        </div>
-        <div class="target-item">
-          <label>Carbohydrates (g)</label>
-          <input type="number" id="target-carbs" value="175" step="0.1" />
-          <div class="progress">
-            <div class="progress-bar" id="progress-carbs"></div>
-          </div>
-          <span class="progress-label" id="label-carbs"></span>
-        </div>
-        <div class="target-item">
-          <label>Fats (g)</label>
-          <input type="number" id="target-fats" value="50" step="0.1" />
-          <div class="progress">
-            <div class="progress-bar" id="progress-fats"></div>
-          </div>
-          <span class="progress-label" id="label-fats"></span>
-        </div>
-        <div class="target-item">
-          <label>Fiber (g)</label>
-          <input type="number" id="target-fiber" value="25" step="0.1" />
-          <div class="progress">
-            <div class="progress-bar" id="progress-fiber"></div>
-          </div>
-          <span class="progress-label" id="label-fiber"></span>
-        </div>
+  <!-- INGREDIENTS -->
+  <section>
+    <h2>Ingredients (per 100g)</h2>
+    <label>Name</label>
+    <input type="text" id="ingName">
+    <label>Calories</label>
+    <input type="number" id="ingCalories">
+    <label>Protein (g)</label>
+    <input type="number" id="ingProtein">
+    <label>Carbs (g)</label>
+    <input type="number" id="ingCarbs">
+    <label>Fat (g)</label>
+    <input type="number" id="ingFat">
+    <label>Fiber (g)</label>
+    <input type="number" id="ingFiber">
+    <button id="addIngredientBtn">Add Ingredient</button>
+
+    <h3>Saved Ingredients</h3>
+    <ul id="ingredientList"></ul>
+  </section>
+
+  <!-- MEALS -->
+  <section>
+    <h2>Meals</h2>
+    <label>Meal name</label>
+    <input type="text" id="mealName">
+    <label>Ingredient (choose from list)</label>
+    <input type="text" id="mealIngredient">
+    <label>Portion (grams)</label>
+    <input type="number" id="portionInput" placeholder="e.g., 150">
+    <button id="addMealBtn">Add Meal</button>
+
+    <h3>Saved Meals</h3>
+    <ul id="mealList"></ul>
+  </section>
+
+  <!-- WEEKLY PLANNER -->
+  <section>
+    <h2>Weekly Meal Planner</h2>
+    <p>Type meal names (one per line) for each day. Names must match your saved meals.</p>
+
+    <div id="weekly-planner">
+      <div class="day" data-day="Monday">
+        <h3>Monday</h3>
+        <textarea class="meal-input" placeholder="Meal names for Monday..."></textarea>
       </div>
-    </section>
-
-    <!-- API Search & Custom Food -->
-    <section class="card">
-      <h2>Add Foods (API & Custom)</h2>
-      <div class="api-search">
-        <input type="text" id="api-search-input" placeholder="Search Open Food Facts (e.g., 'chicken breast')" />
-        <button id="api-search-btn">Search & Add</button>
-        <small>Fetched items will be appended to the food list.</small>
+      <div class="day" data-day="Tuesday">
+        <h3>Tuesday</h3>
+        <textarea class="meal-input" placeholder="Meal names for Tuesday..."></textarea>
       </div>
-
-      <div class="custom-food">
-        <h3>Manual Custom Food Entry</h3>
-        <div class="custom-grid">
-          <input type="text" id="custom-name" placeholder="Name" />
-          <input type="number" id="custom-kcal" placeholder="kcal / 100g" step="0.1" />
-          <input type="number" id="custom-protein" placeholder="Protein / 100g (g)" step="0.1" />
-          <input type="number" id="custom-carbs" placeholder="Carbs / 100g (g)" step="0.1" />
-          <input type="number" id="custom-fats" placeholder="Fats / 100g (g)" step="0.1" />
-          <input type="number" id="custom-fiber" placeholder="Fiber / 100g (g)" step="0.1" />
-          <input type="number" id="custom-serving" placeholder="Serving size (g or ml)" step="0.1" />
-          <button id="custom-add-btn">Add Custom Food</button>
-        </div>
+      <div class="day" data-day="Wednesday">
+        <h3>Wednesday</h3>
+        <textarea class="meal-input" placeholder="Meal names for Wednesday..."></textarea>
       </div>
-    </section>
-
-    <!-- Meals -->
-    <section class="card">
-      <h2>Meal Planner</h2>
-      <div class="meal-sections">
-        <div class="meal-section" data-meal="breakfast">
-          <h3>Breakfast</h3>
-          <button class="add-row-btn">+ Add Item</button>
-          <table class="meal-table">
-            <thead>
-              <tr>
-                <th>Food</th>
-                <th>Qty</th>
-                <th>Unit</th>
-                <th>Energy</th>
-                <th>P</th>
-                <th>C</th>
-                <th>F</th>
-                <th>Fiber</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-            <tfoot>
-              <tr class="meal-subtotal">
-                <td>Subtotal</td>
-                <td colspan="2"></td>
-                <td class="subtotal-energy">0</td>
-                <td class="subtotal-protein">0</td>
-                <td class="subtotal-carbs">0</td>
-                <td class="subtotal-fats">0</td>
-                <td class="subtotal-fiber">0</td>
-                <td></td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-
-        <div class="meal-section" data-meal="lunch">
-          <h3>Lunch</h3>
-          <button class="add-row-btn">+ Add Item</button>
-          <table class="meal-table">
-            <thead>
-              <tr>
-                <th>Food</th>
-                <th>Qty</th>
-                <th>Unit</th>
-                <th>Energy</th>
-                <th>P</th>
-                <th>C</th>
-                <th>F</th>
-                <th>Fiber</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-            <tfoot>
-              <tr class="meal-subtotal">
-                <td>Subtotal</td>
-                <td colspan="2"></td>
-                <td class="subtotal-energy">0</td>
-                <td class="subtotal-protein">0</td>
-                <td class="subtotal-carbs">0</td>
-                <td class="subtotal-fats">0</td>
-                <td class="subtotal-fiber">0</td>
-                <td></td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-
-        <div class="meal-section" data-meal="dinner">
-          <h3>Dinner</h3>
-          <button class="add-row-btn">+ Add Item</button>
-          <table class="meal-table">
-            <thead>
-              <tr>
-                <th>Food</th>
-                <th>Qty</th>
-                <th>Unit</th>
-                <th>Energy</th>
-                <th>P</th>
-                <th>C</th>
-                <th>F</th>
-                <th>Fiber</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-            <tfoot>
-              <tr class="meal-subtotal">
-                <td>Subtotal</td>
-                <td colspan="2"></td>
-                <td class="subtotal-energy">0</td>
-                <td class="subtotal-protein">0</td>
-                <td class="subtotal-carbs">0</td>
-                <td class="subtotal-fats">0</td>
-                <td class="subtotal-fiber">0</td>
-                <td></td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-
-        <div class="meal-section" data-meal="snack">
-          <h3>Snack / Post-Workout</h3>
-          <button class="add-row-btn">+ Add Item</button>
-          <table class="meal-table">
-            <thead>
-              <tr>
-                <th>Food</th>
-                <th>Qty</th>
-                <th>Unit</th>
-                <th>Energy</th>
-                <th>P</th>
-                <th>C</th>
-                <th>F</th>
-                <th>Fiber</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-            <tfoot>
-              <tr class="meal-subtotal">
-                <td>Subtotal</td>
-                <td colspan="2"></td>
-                <td class="subtotal-energy">0</td>
-                <td class="subtotal-protein">0</td>
-                <td class="subtotal-carbs">0</td>
-                <td class="subtotal-fats">0</td>
-                <td class="subtotal-fiber">0</td>
-                <td></td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
+      <div class="day" data-day="Thursday">
+        <h3>Thursday</h3>
+        <textarea class="meal-input" placeholder="Meal names for Thursday..."></textarea>
       </div>
-    </section>
-
-    <!-- Totals -->
-    <section class="card">
-      <h2>Daily Totals</h2>
-      <div class="totals-grid">
-        <div><strong>Energy:</strong> <span id="total-energy">0</span> kcal</div>
-        <div><strong>Protein:</strong> <span id="total-protein">0</span> g</div>
-        <div><strong>Carbs:</strong> <span id="total-carbs">0</span> g</div>
-        <div><strong>Fats:</strong> <span id="total-fats">0</span> g</div>
-        <div><strong>Fiber:</strong> <span id="total-fiber">0</span> g</div>
+      <div class="day" data-day="Friday">
+        <h3>Friday</h3>
+        <textarea class="meal-input" placeholder="Meal names for Friday..."></textarea>
       </div>
-    </section>
+      <div class="day" data-day="Saturday">
+        <h3>Saturday</h3>
+        <textarea class="meal-input" placeholder="Meal names for Saturday..."></textarea>
+      </div>
+      <div class="day" data-day="Sunday">
+        <h3>Sunday</h3>
+        <textarea class="meal-input" placeholder="Meal names for Sunday..."></textarea>
+      </div>
+    </div>
 
-    <section class="card">
-      <button id="clear-data-btn" class="danger-btn">Clear All Saved Data</button>
-      <small>Data is stored in your browser via localStorage.</small>
-    </section>
-  </main>
+    <button id="saveWeekBtn">Save Weekly Plan</button>
+    <button id="exportWeekBtn">Export Week to Excel</button>
+  </section>
+
+  <!-- DATA CONTROLS -->
+  <section>
+    <h2>Data</h2>
+    <button id="clearDataBtn">Clear all saved data</button>
+  </section>
 
   <script src="app.js"></script>
 </body>
