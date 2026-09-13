@@ -16,7 +16,6 @@ const MEALS = [
   { key: "snack", label: "Snack / Post-Workout" }
 ];
 
-// Simple preset foods (per serving)
 let foods = [];
 let weekPlan = {};
 let targets = { ...DEFAULT_TARGETS };
@@ -194,7 +193,6 @@ function initPresetFoods() {
       fiber: 2.4,
       preset: true
     }
-    // You can extend with the rest of your 28 items similarly
   ];
 }
 
@@ -243,15 +241,13 @@ function computeRowMacros(entry, food) {
     return { kcals: 0, protein: 0, carbs: 0, fats: 0, fiber: 0 };
   }
   const qty = entry.qty || 0;
-  // qty is grams or servings depending on mode
   let factor = 1;
   if (entry.mode === "grams") {
-    // assume servingSize is roughly 100g or 80g etc; we approximate by parsing number
     const match = food.servingSize.match(/(\d+(\.\d+)?)/);
     const base = match ? parseFloat(match[1]) : 100;
     factor = qty / base;
   } else {
-    factor = qty; // servings
+    factor = qty;
   }
   return {
     kcals: food.kcals * factor,
@@ -305,12 +301,225 @@ const mealsContainerEl = document.getElementById("mealsContainer");
 function renderDayTabs() {
   dayTabsEl.querySelectorAll(".day-tab").forEach((btn) => {
     btn.classList.toggle("active", btn.dataset.day === currentDay);
-    btn.addEventListener("click", () => {
+    btn.onclick = () => {
       currentDay = btn.dataset.day;
       renderMeals();
       updateProgress();
-    });
+    };
   });
+}
+
+function createAddFoodPanel(mealKey) {
+  const panel = document.createElement("div");
+  panel.className = "add-food-panel";
+
+  const row1 = document.createElement("div");
+  row1.className = "add-food-row";
+  const dbDiv = document.createElement("div");
+  const dbLabel = document.createElement("label");
+  dbLabel.textContent = "Select from database";
+  const dbSelect = document.createElement("select");
+  dbSelect.innerHTML = `<option value="">-- choose food --</option>`;
+  foods.forEach((f) => {
+    const opt = document.createElement("option");
+    opt.value = f.id;
+    opt.textContent = `${f.name} (${f.servingSize})`;
+    dbSelect.appendChild(opt);
+  });
+  dbDiv.appendChild(dbLabel);
+  dbDiv.appendChild(dbSelect);
+  row1.appendChild(dbDiv);
+
+  const row2 = document.createElement("div");
+  row2.className = "add-food-row";
+
+  const nameDiv = document.createElement("div");
+  const nameLabel = document.createElement("label");
+  nameLabel.textContent = "Manual name";
+  const nameInput = document.createElement("input");
+  nameInput.type = "text";
+  nameDiv.appendChild(nameLabel);
+  nameDiv.appendChild(nameInput);
+
+  const servingDiv = document.createElement("div");
+  const servingLabel = document.createElement("label");
+  servingLabel.textContent = "Serving size";
+  const servingInput = document.createElement("input");
+  servingInput.type = "text";
+  servingDiv.appendChild(servingLabel);
+  servingDiv.appendChild(servingInput);
+
+  const kcalsDiv = document.createElement("div");
+  const kcalsLabel = document.createElement("label");
+  kcalsLabel.textContent = "Kcals";
+  const kcalsInput = document.createElement("input");
+  kcalsInput.type = "number";
+  kcalsInput.step = "0.1";
+  kcalsDiv.appendChild(kcalsLabel);
+  kcalsDiv.appendChild(kcalsInput);
+
+  const pDiv = document.createElement("div");
+  const pLabel = document.createElement("label");
+  pLabel.textContent = "Protein (g)";
+  const pInput = document.createElement("input");
+  pInput.type = "number";
+  pInput.step = "0.1";
+  pDiv.appendChild(pLabel);
+  pDiv.appendChild(pInput);
+
+  const cDiv = document.createElement("div");
+  const cLabel = document.createElement("label");
+  cLabel.textContent = "Carbs (g)";
+  const cInput = document.createElement("input");
+  cInput.type = "number";
+  cInput.step = "0.1";
+  cDiv.appendChild(cLabel);
+  cDiv.appendChild(cInput);
+
+  const fDiv = document.createElement("div");
+  const fLabel = document.createElement("label");
+  fLabel.textContent = "Fats (g)";
+  const fInput = document.createElement("input");
+  fInput.type = "number";
+  fInput.step = "0.1";
+  fDiv.appendChild(fLabel);
+  fDiv.appendChild(fInput);
+
+  const fiDiv = document.createElement("div");
+  const fiLabel = document.createElement("label");
+  fiLabel.textContent = "Fiber (g)";
+  const fiInput = document.createElement("input");
+  fiInput.type = "number";
+  fiInput.step = "0.1";
+  fiDiv.appendChild(fiLabel);
+  fiDiv.appendChild(fiInput);
+
+  row2.appendChild(nameDiv);
+  row2.appendChild(servingDiv);
+  row2.appendChild(kcalsDiv);
+  row2.appendChild(pDiv);
+  row2.appendChild(cDiv);
+  row2.appendChild(fDiv);
+  row2.appendChild(fiDiv);
+
+  const actions = document.createElement("div");
+  actions.className = "add-food-actions";
+  const status = document.createElement("div");
+  status.className = "add-food-status";
+  status.textContent = "";
+  const addBtn = document.createElement("button");
+  addBtn.className = "btn-primary";
+  addBtn.textContent = "Add to Meal";
+
+  actions.appendChild(status);
+  actions.appendChild(addBtn);
+
+  panel.appendChild(row1);
+  panel.appendChild(row2);
+  panel.appendChild(actions);
+
+  addBtn.onclick = async () => {
+    status.textContent = "Adding...";
+    const selectedId = dbSelect.value;
+    if (selectedId) {
+      const food = foods.find((f) => f.id === selectedId);
+      if (!food) {
+        status.textContent = "Food not found.";
+        return;
+      }
+      weekPlan[currentDay][mealKey].push({
+        foodId: food.id,
+        mode: "grams",
+        qty: parseFloat(food.servingSize.match(/(\d+(\.\d+)?)/)?.[1] || "100")
+      });
+      saveWeek();
+      renderMeals();
+      updateProgress();
+      status.textContent = "Added from database.";
+      return;
+    }
+
+    const name = nameInput.value.trim();
+    if (!name) {
+      status.textContent = "Enter a name or choose from database.";
+      return;
+    }
+
+    // AUTO-SEARCH MODE C: try to fetch nutrition, then add
+    let kcals = parseFloat(kcalsInput.value) || 0;
+    let protein = parseFloat(pInput.value) || 0;
+    let carbs = parseFloat(cInput.value) || 0;
+    let fats = parseFloat(fInput.value) || 0;
+    let fiber = parseFloat(fiInput.value) || 0;
+    let servingSize = servingInput.value.trim() || "100g";
+
+    const needsLookup =
+      kcals === 0 && protein === 0 && carbs === 0 && fats === 0 && fiber === 0;
+
+    if (needsLookup) {
+      try {
+        const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(
+          name
+        )}&search_simple=1&action=process&json=1&page_size=1`;
+        const res = await fetch(url);
+        const data = await res.json();
+        const p = (data.products || [])[0];
+        if (p && p.nutriments) {
+          const nutr = p.nutriments;
+          kcals = nutr["energy-kcal_100g"] || kcals;
+          protein = nutr["proteins_100g"] || protein;
+          carbs = nutr["carbohydrates_100g"] || carbs;
+          fats = nutr["fat_100g"] || fats;
+          fiber = nutr["fiber_100g"] || fiber;
+          servingSize = "100g";
+        }
+      } catch (e) {
+        console.warn("Auto-search failed", e);
+      }
+    }
+
+    if (
+      kcals === 0 &&
+      protein === 0 &&
+      carbs === 0 &&
+      fats === 0 &&
+      fiber === 0
+    ) {
+      status.textContent =
+        "No nutrition found. Please fill macros manually, then tap Add again.";
+      return;
+    }
+
+    const id = `manual_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+    const newFood = {
+      id,
+      name,
+      category: "Fruits & Vegetables",
+      servingSize,
+      kcals,
+      protein,
+      carbs,
+      fats,
+      fiber,
+      preset: false
+    };
+    foods.push(newFood);
+    saveFoods();
+    populateCategoryFilter();
+    renderFoodTable();
+
+    weekPlan[currentDay][mealKey].push({
+      foodId: id,
+      mode: "grams",
+      qty: parseFloat(servingSize.match(/(\d+(\.\d+)?)/)?.[1] || "100")
+    });
+    saveWeek();
+    renderMeals();
+    updateProgress();
+    status.textContent = "Added with nutrition.";
+  };
+
+  return panel;
 }
 
 function createMealSection(meal) {
@@ -337,6 +546,9 @@ function createMealSection(meal) {
 
   const body = document.createElement("div");
   body.className = "meal-body";
+
+  const addPanel = createAddFoodPanel(meal.key);
+  body.appendChild(addPanel);
 
   const wrapper = document.createElement("div");
   wrapper.className = "meal-table-wrapper";
@@ -425,18 +637,16 @@ function createMealSection(meal) {
 
     tbody.appendChild(tr);
 
-    // Mode change
-    modeSelect.addEventListener("change", (e) => {
+    modeSelect.onchange = (e) => {
       const mKey = e.target.dataset.meal;
       const i = parseInt(e.target.dataset.index, 10);
       weekPlan[currentDay][mKey][i].mode = e.target.value;
       saveWeek();
       updateRowAndMealSubtotal(mKey, i, tr, subtotal);
       updateProgress();
-    });
+    };
 
-    // Qty input (no full re-render to keep keyboard open)
-    qtyInput.addEventListener("input", (e) => {
+    qtyInput.oninput = (e) => {
       const mKey = e.target.dataset.meal;
       const i = parseInt(e.target.dataset.index, 10);
       const val = parseFloat(e.target.value) || 0;
@@ -444,17 +654,16 @@ function createMealSection(meal) {
       saveWeek();
       updateRowAndMealSubtotal(mKey, i, tr, subtotal);
       updateProgress();
-    });
+    };
 
-    // Remove
-    rmBtn.addEventListener("click", () => {
+    rmBtn.onclick = () => {
       const mKey = rmBtn.dataset.meal;
       const i = parseInt(rmBtn.dataset.index, 10);
       weekPlan[currentDay][mKey].splice(i, 1);
       saveWeek();
       renderMeals();
       updateProgress();
-    });
+    };
   });
 
   table.appendChild(tbody);
@@ -464,10 +673,8 @@ function createMealSection(meal) {
   section.appendChild(header);
   section.appendChild(body);
 
-  // Header click toggles expand/collapse
-  header.addEventListener("click", () => {
+  header.onclick = () => {
     const isExpanded = section.classList.contains("expanded");
-    // collapse all others
     mealsContainerEl.querySelectorAll(".meal-section").forEach((sec) => {
       sec.classList.remove("expanded");
     });
@@ -477,7 +684,7 @@ function createMealSection(meal) {
     } else {
       hideStickyMealHeader();
     }
-  });
+  };
 
   return section;
 }
@@ -507,7 +714,6 @@ function renderMeals() {
     mealsContainerEl.appendChild(section);
   });
 
-  // Expand breakfast by default
   const firstSection = mealsContainerEl.querySelector(".meal-section");
   if (firstSection) {
     firstSection.classList.add("expanded");
@@ -517,7 +723,7 @@ function renderMeals() {
 
 // ---------- STICKY & AUTO-COLLAPSE LOGIC ----------
 
-function updateStickyMealHeader(mealKey, sectionEl) {
+function updateStickyMealHeader(mealKey) {
   const meal = MEALS.find((m) => m.key === mealKey);
   if (!meal) return;
 
@@ -543,13 +749,10 @@ function handleMealScroll() {
 
   const containerRect = mealScrollContainerEl.getBoundingClientRect();
 
-  // Auto-collapse & sticky header handoff
   let currentStickySection = null;
   sections.forEach((sec) => {
     const rect = sec.getBoundingClientRect();
     const headerHeight = stickyMealHeaderEl.offsetHeight || 0;
-
-    // Section header position relative to container
     const headerTop = rect.top - containerRect.top;
 
     if (headerTop <= headerHeight + 8 && headerTop + rect.height > headerHeight + 8) {
@@ -559,7 +762,6 @@ function handleMealScroll() {
 
   if (currentStickySection) {
     const mealKey = currentStickySection.dataset.mealKey;
-    // ensure only this section expanded
     sections.forEach((sec) => {
       if (sec === currentStickySection) {
         sec.classList.add("expanded");
@@ -567,12 +769,11 @@ function handleMealScroll() {
         sec.classList.remove("expanded");
       }
     });
-    updateStickyMealHeader(mealKey, currentStickySection);
+    updateStickyMealHeader(mealKey);
   } else {
     hideStickyMealHeader();
   }
 
-  // Day tabs sticky (D2 behavior)
   const plannerRect = mealScrollContainerEl.getBoundingClientRect();
   if (plannerRect.top <= 0) {
     dayTabsWrapperEl.classList.add("sticky");
@@ -641,12 +842,12 @@ function renderFoodTable() {
         btn.textContent = "Remove";
         btn.className = "btn-secondary";
         btn.style.fontSize = "0.75rem";
-        btn.addEventListener("click", () => {
+        btn.onclick = () => {
           foods = foods.filter((x) => x.id !== f.id);
           saveFoods();
           populateCategoryFilter();
           renderFoodTable();
-        });
+        };
         rmCell.appendChild(btn);
       } else {
         rmCell.textContent = "-";
@@ -697,7 +898,7 @@ async function searchOpenFoodFacts(query) {
       btn.textContent = "Add to DB";
       btn.className = "btn-primary";
       btn.style.fontSize = "0.75rem";
-      btn.addEventListener("click", () => {
+      btn.onclick = () => {
         const id = `custom_${Date.now()}_${idx}`;
         foods.push({
           id,
@@ -714,7 +915,7 @@ async function searchOpenFoodFacts(query) {
         saveFoods();
         populateCategoryFilter();
         renderFoodTable();
-      });
+      };
       addCell.appendChild(btn);
 
       searchResultsBodyEl.appendChild(tr);
@@ -763,7 +964,6 @@ const exportBtnEl = document.getElementById("exportExcelBtn");
 
 function exportWeekToExcel() {
   const rows = [];
-  // Header
   rows.push([
     "Day",
     "Meal",
@@ -798,9 +998,20 @@ function exportWeekToExcel() {
     });
   });
 
-  // Daily totals vs targets
   rows.push([]);
-  rows.push(["Day", "Energy", "Protein", "Carbs", "Fats", "Fiber", "Target Energy", "Target Protein", "Target Carbs", "Target Fats", "Target Fiber"]);
+  rows.push([
+    "Day",
+    "Energy",
+    "Protein",
+    "Carbs",
+    "Fats",
+    "Fiber",
+    "Target Energy",
+    "Target Protein",
+    "Target Carbs",
+    "Target Fats",
+    "Target Fiber"
+  ]);
   DAYS.forEach((day) => {
     const totals = computeDayTotals(day);
     rows.push([
@@ -846,9 +1057,6 @@ function init() {
   });
 
   exportBtnEl.addEventListener("click", exportWeekToExcel);
-
-  // Simple way to add foods to meals: long-press not implemented; you can extend later.
-  // For now, you can manually add entries in code or extend UI.
 }
 
 document.addEventListener("DOMContentLoaded", init);
