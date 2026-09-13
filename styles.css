@@ -172,8 +172,51 @@ body {
 }
 
 .meal-section.expanded .meal-body {
-  max-height: 600px; /* enough for several rows */
+  max-height: 900px; /* enough for panel + rows */
   transform: translateY(0);
+}
+
+/* Add-food panel (AF1-A) */
+
+.add-food-panel {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--border-light);
+  background: #fff;
+}
+
+.add-food-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+  font-size: 0.8rem;
+}
+
+.add-food-row label {
+  font-size: 0.75rem;
+}
+
+.add-food-row select,
+.add-food-row input {
+  width: 100%;
+  padding: 0.3rem;
+  font-size: 0.8rem;
+}
+
+.add-food-row > div {
+  flex: 1 1 120px;
+}
+
+.add-food-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.add-food-status {
+  font-size: 0.75rem;
+  color: #6c757d;
 }
 
 /* Meal table */
@@ -199,7 +242,7 @@ body {
   background: var(--card-grey);
 }
 
-/* Inputs */
+/* Inputs inside table */
 
 .meal-table input[type="number"],
 .meal-table select {
