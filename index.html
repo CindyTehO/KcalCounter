@@ -11,139 +11,80 @@
 <body>
   <div class="app-root">
 
-    <!-- HEADER -->
-    <header class="app-header">
+    <header>
       <h1>Calorie & Macro Tracker</h1>
-      <p>Weekly Meal Planner • Macros Dashboard • Excel Export</p>
+      <p>Simple Version • All Meals Expanded • Grams Only</p>
     </header>
 
-    <!-- Sticky Day Tabs -->
-    <div id="dayTabsWrapper" class="day-tabs-wrapper">
-      <div id="dayTabs" class="day-tabs">
-        <button data-day="Mon" class="day-tab active">Mon</button>
-        <button data-day="Tue" class="day-tab">Tue</button>
-        <button data-day="Wed" class="day-tab">Wed</button>
-        <button data-day="Thu" class="day-tab">Thu</button>
-        <button data-day="Fri" class="day-tab">Fri</button>
-        <button data-day="Sat" class="day-tab">Sat</button>
-        <button data-day="Sun" class="day-tab">Sun</button>
-      </div>
+    <!-- DAY TABS -->
+    <div id="dayTabs">
+      <button data-day="Mon" class="active">Mon</button>
+      <button data-day="Tue">Tue</button>
+      <button data-day="Wed">Wed</button>
+      <button data-day="Thu">Thu</button>
+      <button data-day="Fri">Fri</button>
+      <button data-day="Sat">Sat</button>
+      <button data-day="Sun">Sun</button>
     </div>
 
-    <!-- MEAL PLANNER (MP‑A: TOP) -->
-    <section id="mealScrollContainer" class="meal-scroll-container">
-      <div id="stickyMealHeader" class="sticky-meal-header"></div>
-      <div id="mealsContainer" class="meals-container"></div>
-    </section>
+    <!-- MEAL PLANNER -->
+    <section id="mealPlanner"></section>
 
     <!-- DAILY PROGRESS -->
-    <section class="progress-combined">
+    <section>
       <h2>Daily Progress</h2>
-      <table class="combined-progress-table">
-        <thead>
-          <tr>
-            <th>Macro</th>
-            <th>Progress</th>
-            <th>Target</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>Energy (kcals)</td><td id="progEnergy"></td><td id="tgtEnergy"></td></tr>
-          <tr><td>Protein (g)</td><td id="progProtein"></td><td id="tgtProtein"></td></tr>
-          <tr><td>Carbs (g)</td><td id="progCarbs"></td><td id="tgtCarbs"></td></tr>
-          <tr><td>Fats (g)</td><td id="progFats"></td><td id="tgtFats"></td></tr>
-          <tr><td>Fiber (g)</td><td id="progFiber"></td><td id="tgtFiber"></td></tr>
-        </tbody>
+      <table>
+        <tr><th>Macro</th><th>Progress</th><th>Target</th></tr>
+        <tr><td>Energy (kcals)</td><td id="progEnergy"></td><td>1700</td></tr>
+        <tr><td>Protein (g)</td><td id="progProtein"></td><td>120</td></tr>
+        <tr><td>Carbs (g)</td><td id="progCarbs"></td><td>175</td></tr>
+        <tr><td>Fats (g)</td><td id="progFats"></td><td>50</td></tr>
+        <tr><td>Fiber (g)</td><td id="progFiber"></td><td>25</td></tr>
       </table>
     </section>
 
-    <!-- DATABASE -->
-    <section class="database-section">
-      <div class="db-card">
-        <h2>Food Database</h2>
-        <p>Preset favorites plus your custom items.</p>
-        <div class="db-controls">
-          <label>Filter by Category:</label>
-          <select id="categoryFilter">
-            <option value="all">All</option>
-          </select>
-        </div>
-        <div class="table-scroll">
-          <table class="food-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Serving Size</th>
-                <th>Kcals</th>
-                <th>Protein</th>
-                <th>Carbs</th>
-                <th>Fats</th>
-                <th>Fiber</th>
-                <th>Custom?</th>
-                <th>Remove</th>
-              </tr>
-            </thead>
-            <tbody id="foodTableBody"></tbody>
-          </table>
-        </div>
-      </div>
+    <!-- FOOD DATABASE -->
+    <section>
+      <h2>Food Database</h2>
+      <table id="foodTable">
+        <tr>
+          <th>Name</th><th>Serving</th><th>Kcals</th><th>P</th><th>C</th><th>F</th><th>Fiber</th><th>Remove</th>
+        </tr>
+      </table>
+    </section>
 
-      <div class="db-card">
-        <h2>Search Online (Open Food Facts)</h2>
-        <div class="search-row">
-          <input type="text" id="searchInput" placeholder="Search food name..." />
-          <button id="searchBtn" class="btn-secondary">Search</button>
-        </div>
-        <p class="search-note">
-          Uses Open Food Facts API. Not all items have full macro data; you can edit before adding.
-        </p>
-        <div class="table-scroll">
-          <table class="food-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Serving Size</th>
-                <th>Kcals</th>
-                <th>Protein</th>
-                <th>Carbs</th>
-                <th>Fats</th>
-                <th>Fiber</th>
-                <th>Add</th>
-              </tr>
-            </thead>
-            <tbody id="searchResultsBody"></tbody>
-          </table>
-        </div>
-      </div>
+    <!-- SEARCH -->
+    <section>
+      <h2>Search Online (Open Food Facts)</h2>
+      <input id="searchInput" placeholder="Search food name..." />
+      <button id="searchBtn">Search</button>
+      <table id="searchResults">
+        <tr>
+          <th>Name</th><th>Kcals</th><th>P</th><th>C</th><th>F</th><th>Fiber</th><th>Add</th>
+        </tr>
+      </table>
+    </section>
 
-      <div class="db-card">
-        <h2>Add Custom Food Item</h2>
-        <form id="customFoodForm" class="custom-form">
-          <div class="form-row">
-            <label>Name</label>
-            <input type="text" id="customName" required />
-          </div>
-          <div class="form-row">
-            <label>Category</label>
-            <select id="customCategory" required>
-              <option value="Poultry & Meats">Poultry & Meats</option>
-              <option value="Seafood">Seafood</option>
-              <option value="Dairy & Eggs">Dairy & Eggs</option>
-              <option value="Grains & Starches">Grains & Starches</option>
-              <option value="Fruits & Vegetables">Fruits & Vegetables</option>
-              <option value="Beverages & Supplements">Beverages & Supplements</option>
-            </select>
-          </div>
-          <div class="form-row">
-            <label>Serving Size</label>
-            <input type="text" id="customServingSize" required />
-          </div>
-          <div class="form-row macros-row">
-            <div><label>Kcals</label><input type="number" id="customKcals" step="0.1" required /></div>
-            <div><label>Protein</label><input type="number" id="customProtein" step="0.1" required /></div>
-            <div><label>Carbs</label><input type="number" id="customCarbs" step="0.1" required /></div>
-            <div><label>Fats</label><input type="number" id="customFats" step="0.1" required /></div>
-            <div><label>Fiber</label><input type="number" id="customFiber" step="0.1" required /></div>
-          </div>
-          <button type="submit" class="btn-primary">
+    <!-- CUSTOM FOOD -->
+    <section>
+      <h2>Add Custom Food</h2>
+      <input id="customName" placeholder="Name" />
+      <input id="customServing" placeholder="Serving (g)" />
+      <input id="customKcals" placeholder="Kcals" type="number" />
+      <input id="customProtein" placeholder="Protein" type="number" />
+      <input id="customCarbs" placeholder="Carbs" type="number" />
+      <input id="customFats" placeholder="Fats" type="number" />
+      <input id="customFiber" placeholder="Fiber" type="number" />
+      <button id="addCustomBtn">Add</button>
+    </section>
+
+    <!-- EXPORT -->
+    <section>
+      <button id="exportBtn">Export Week to Excel</button>
+    </section>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
