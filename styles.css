@@ -1,136 +1,60 @@
-:root {
-  --header-blue:#7091E6;
-  --bg-cream:#F8F9FA;
-  --card-grey:#E9ECEF;
-  --border-light:#CED4DA;
-  --text-dark:#343A40;
-  --accent-green:#28A745;
-}
-
 body {
-  margin:0;
-  font-family:system-ui;
-  background:var(--bg-cream);
-  color:var(--text-dark);
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 1rem;
+  background: #f7f7f7;
 }
 
-.app-root {
-  max-width:1100px;
-  margin:auto;
-  padding:0.75rem;
+header {
+  background: #7091E6;
+  color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
 }
 
-/* HEADER */
-.app-header {
-  background:var(--header-blue);
-  color:#fff;
-  padding:1rem;
-  border-radius:0.75rem;
-  margin-bottom:0.75rem;
+#dayTabs button {
+  margin: 0.2rem;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
 }
 
-/* DAY TABS */
-.day-tabs-wrapper {
-  position:relative;
-  margin-bottom:0.5rem;
-}
-.day-tabs-wrapper.sticky {
-  position:sticky;
-  top:0;
-  background:var(--bg-cream);
-}
-.day-tabs {
-  display:flex;
-  gap:0.25rem;
-  overflow-x:auto;
-}
-.day-tab {
-  padding:0.35rem 0.7rem;
-  border-radius:999px;
-  border:1px solid var(--border-light);
-  background:#fff;
-}
-.day-tab.active {
-  background:var(--header-blue);
-  color:#fff;
+#dayTabs .active {
+  background: #7091E6;
+  color: white;
 }
 
-/* MEAL PLANNER */
-.meal-scroll-container {
-  max-height:60vh;
-  overflow-y:auto;
-  margin-bottom:0.75rem;
-}
-/* FIX: Make meal planner visible */
-.meal-section {
-  min-height: 50px;
+section {
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
 }
 
-.meal-table-wrapper {
-  padding: 0.5rem;
-}
-.sticky-meal-header {
-  position:sticky;
-  top:2.4rem;
-  background:var(--card-grey);
-  padding:0.5rem;
-  border-radius:0.75rem;
-  display:none;
-}
-.sticky-meal-header.visible {
-  display:flex;
-  justify-content:space-between;
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.5rem;
 }
 
-.meals-container {
-  display:flex;
-  flex-direction:column;
-  gap:0.5rem;
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 0.4rem;
+  font-size: 0.9rem;
 }
 
-.meal-section {
-  background:#fff;
-  border:1px solid var(--border-light);
-  border-radius:0.75rem;
-  overflow:hidden;
+input {
+  margin: 0.2rem;
+  padding: 0.4rem;
+  width: 140px;
 }
 
-.meal-header {
-  background:var(--card-grey);
-  padding:0.5rem;
-  display:flex;
-  justify-content:space-between;
-  cursor:pointer;
+button {
+  padding: 0.5rem 1rem;
+  margin: 0.2rem;
+  border-radius: 6px;
+  border: 1px solid #7091E6;
+  background: #7091E6;
+  color: white;
 }
-
-.meal-body {
-  max-height:0;
-  overflow:hidden;
-  transition:max-height 0.35s ease-out;
-}
-.meal-section.expanded .meal-body {
-  max-height:900px;
-}
-
-/* ADD FOOD PANEL */
-.add-food-panel {
-  padding:0.75rem;
-  border-bottom:1px solid var(--border-light);
-}
-.add-food-row {
-  display:flex;
-  flex-wrap:wrap;
-  gap:0.5rem;
-  margin-bottom:0.5rem;
-}
-.add-food-row > div {
-  flex:1 1 120px;
-}
-.add-food-row input,
-.add-food-row select {
-  width:100%;
-  padding:0.3rem;
-}
-.add-food-actions {
-  display:flex;
-  justify-content
