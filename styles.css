@@ -1,333 +1,315 @@
-/* styles.css */
 :root {
   --header-blue: #7091E6;
   --bg-cream: #F8F9FA;
   --card-grey: #E9ECEF;
-  --pastel-green-bg: #D4EDDA;
-  --pastel-green-text: #28A745;
-  --pastel-amber-bg: #FFF3CD;
-  --pastel-amber-text: #856404;
-  --text-dark: #343A40;
+  --soft-green: #D4EDDA;
+  --soft-yellow: #FFF3CD;
   --border-light: #CED4DA;
+  --text-dark: #343A40;
+  --accent-green: #28A745;
+  --accent-amber: #856404;
 }
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background-color: var(--bg-cream);
+  background: var(--bg-cream);
   color: var(--text-dark);
 }
 
 .app-root {
-  max-width: 1200px;
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 0.75rem;
 }
+
+/* HEADER */
 
 .app-header {
-  background-color: var(--header-blue);
+  background: var(--header-blue);
   color: #fff;
-  padding: 1.5rem;
+  padding: 1rem 1.25rem;
   border-radius: 0.75rem;
-  text-align: center;
-  margin-bottom: 1rem;
-}
-
-.app-header h1 {
-  margin: 0;
-  font-size: 1.8rem;
-}
-
-.app-header p {
-  margin: 0.25rem 0 0;
-  font-size: 0.95rem;
-}
-
-.status-banner {
-  margin-bottom: 1rem;
-  padding: 0.75rem 1rem;
-  border-radius: 0.75rem;
-  background-color: var(--pastel-green-bg);
-  color: var(--pastel-green-text);
-  text-align: center;
-  font-weight: 600;
-}
-
-.hidden {
-  display: none;
-}
-
-.dashboard {
-  display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 2fr) minmax(0, 1.5fr);
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.targets-card,
-.progress-card,
-.toggle-card {
-  background-color: var(--card-grey);
-  border-radius: 0.75rem;
-  padding: 1rem;
-}
-
-.targets-card h2,
-.progress-card h2,
-.toggle-card h2 {
-  margin-top: 0;
-  font-size: 1.1rem;
-}
-
-.targets-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.75rem;
   margin-bottom: 0.75rem;
 }
 
-.target-item label {
-  display: block;
-  font-size: 0.85rem;
-  margin-bottom: 0.25rem;
+.app-header h1 {
+  margin: 0 0 0.25rem;
+  font-size: 1.4rem;
 }
 
-.target-item input {
-  width: 100%;
-  padding: 0.35rem 0.5rem;
-  border-radius: 0.4rem;
-  border: 1px solid var(--border-light);
-}
-
-.progress-card p {
-  margin: 0 0 0.5rem;
+.app-header p {
+  margin: 0;
   font-size: 0.9rem;
 }
 
-.progress-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.5rem;
-}
+/* DAY TABS */
 
-.progress-item span {
-  display: block;
-  font-size: 0.85rem;
-  margin-bottom: 0.15rem;
-}
-
-.progress-status {
-  padding: 0.35rem 0.5rem;
-  border-radius: 0.4rem;
-  font-size: 0.85rem;
-  border: 1px solid var(--border-light);
-  background-color: #fff;
-}
-
-.progress-status.met {
-  background-color: var(--pastel-green-bg);
-  color: var(--pastel-green-text);
-  border-color: var(--pastel-green-text);
-}
-
-.progress-status.pending {
-  background-color: var(--pastel-amber-bg);
-  color: var(--pastel-amber-text);
-  border-color: var(--pastel-amber-text);
-}
-
-.toggle-row {
-  display: flex;
-  gap: 1rem;
+.day-tabs-wrapper {
+  position: relative;
+  z-index: 10;
   margin-bottom: 0.5rem;
 }
 
-.toggle-row label {
-  font-size: 0.9rem;
-}
-
-.toggle-note {
-  font-size: 0.8rem;
-  color: #6c757d;
-}
-
-.btn-primary,
-.btn-secondary,
-.btn-export {
-  border: none;
-  border-radius: 0.5rem;
-  padding: 0.45rem 0.9rem;
-  font-size: 0.9rem;
-  cursor: pointer;
-}
-
-.btn-primary {
-  background-color: var(--header-blue);
-  color: #fff;
-}
-
-.btn-secondary {
-  background-color: #fff;
-  color: var(--header-blue);
-  border: 1px solid var(--header-blue);
-}
-
-.btn-export {
-  background-color: var(--pastel-green-bg);
-  color: var(--pastel-green-text);
-  border: 1px solid var(--pastel-green-text);
-}
-
-.btn-primary:hover,
-.btn-secondary:hover,
-.btn-export:hover {
-  opacity: 0.9;
-}
-
-/* Day selector */
-.day-selector {
-  margin-bottom: 1rem;
-}
-
-.day-selector h2 {
-  margin: 0 0 0.5rem;
-  font-size: 1.1rem;
+.day-tabs-wrapper.sticky {
+  position: sticky;
+  top: 0;
+  background: var(--bg-cream);
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
 }
 
 .day-tabs {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.25rem;
+  overflow-x: auto;
 }
 
 .day-tab {
-  border: none;
+  flex: 0 0 auto;
+  border: 1px solid var(--border-light);
+  background: #fff;
+  padding: 0.35rem 0.7rem;
   border-radius: 999px;
-  padding: 0.4rem 0.9rem;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   cursor: pointer;
-  background-color: #fff;
-  color: var(--header-blue);
-  border: 1px solid var(--header-blue);
 }
 
 .day-tab.active {
-  background-color: var(--header-blue);
+  background: var(--header-blue);
   color: #fff;
+  border-color: var(--header-blue);
 }
 
-/* Meals */
-.meals-container {
-  background-color: var(--card-grey);
-  border-radius: 0.75rem;
-  padding: 1rem;
-  margin-bottom: 1.5rem;
+/* MEAL SCROLL CONTAINER */
+
+.meal-scroll-container {
+  position: relative;
+  max-height: 60vh;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+  margin-bottom: 0.75rem;
 }
+
+/* Sticky meal header */
+
+.sticky-meal-header {
+  position: sticky;
+  top: 2.4rem; /* below day tabs when sticky */
+  z-index: 9;
+  background: var(--card-grey);
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.75rem;
+  margin-bottom: 0.25rem;
+  display: none;
+}
+
+.sticky-meal-header.visible {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sticky-meal-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.sticky-meal-subtotal {
+  font-size: 0.8rem;
+}
+
+/* Meals container */
+
+.meals-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Meal section card */
 
 .meal-section {
-  margin-bottom: 1rem;
-  background-color: #fff;
+  background: #fff;
   border-radius: 0.75rem;
-  padding: 0.75rem;
+  border: 1px solid var(--border-light);
+  overflow: hidden;
 }
+
+/* Meal header inside card */
 
 .meal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--card-grey);
+  cursor: pointer;
 }
 
-.meal-header h3 {
-  margin: 0;
-  font-size: 1rem;
+.meal-title {
+  font-weight: 600;
+  font-size: 0.9rem;
 }
 
-.meal-header .meal-subtotal {
-  font-size: 0.85rem;
-  color: #495057;
+.meal-subtotal {
+  font-size: 0.8rem;
+}
+
+/* Collapsible content */
+
+.meal-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease-out, transform 0.35s ease-out;
+  transform: translateY(-4px);
+}
+
+.meal-section.expanded .meal-body {
+  max-height: 600px; /* enough for several rows */
+  transform: translateY(0);
+}
+
+/* Meal table */
+
+.meal-table-wrapper {
+  overflow-x: auto;
 }
 
 .meal-table {
   width: 100%;
+  min-width: 650px;
   border-collapse: collapse;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
 }
 
 .meal-table th,
 .meal-table td {
   border: 1px solid var(--border-light);
   padding: 0.35rem;
-  text-align: left;
 }
 
 .meal-table th {
-  background-color: var(--bg-cream);
+  background: var(--card-grey);
 }
 
-.meal-controls {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
+/* Inputs */
+
+.meal-table input[type="number"],
+.meal-table select {
+  width: 100%;
+  font-size: 0.75rem;
+  padding: 0.15rem;
 }
 
-.meal-controls select,
-.meal-controls input {
-  font-size: 0.8rem;
-  padding: 0.25rem 0.35rem;
-  border-radius: 0.4rem;
-  border: 1px solid var(--border-light);
-}
+/* Buttons */
 
-.meal-controls button {
-  font-size: 0.8rem;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.4rem;
-  border: none;
+.btn-primary,
+.btn-secondary,
+.btn-export {
+  border-radius: 999px;
+  border: 1px solid transparent;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.85rem;
   cursor: pointer;
 }
 
-.meal-controls .btn-remove-row {
-  background-color: #f8d7da;
-  color: #721c24;
+.btn-primary {
+  background: var(--header-blue);
+  color: #fff;
+  border-color: var(--header-blue);
+}
+
+.btn-secondary {
+  background: #fff;
+  color: var(--header-blue);
+  border-color: var(--header-blue);
+}
+
+.btn-export {
+  background: var(--accent-green);
+  color: #fff;
+  border-color: var(--accent-green);
+}
+
+/* Progress combined */
+
+.progress-combined {
+  background: var(--card-grey);
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.progress-combined h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+}
+
+.combined-progress-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.combined-progress-table th,
+.combined-progress-table td {
+  border: 1px solid var(--border-light);
+  padding: 0.35rem;
 }
 
 /* Database section */
+
 .database-section {
-  display: grid;
-  grid-template-columns: minmax(0, 2.5fr) minmax(0, 2.5fr) minmax(0, 2fr);
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
 }
 
 .db-card {
-  background-color: var(--card-grey);
+  background: #fff;
   border-radius: 0.75rem;
+  border: 1px solid var(--border-light);
   padding: 0.75rem;
 }
 
 .db-card h2 {
-  margin-top: 0;
+  margin: 0 0 0.35rem;
   font-size: 1rem;
 }
 
+.db-card p {
+  margin: 0 0 0.35rem;
+  font-size: 0.8rem;
+}
+
 .db-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   margin-bottom: 0.5rem;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
 }
 
 .db-controls select {
-  padding: 0.25rem 0.35rem;
-  border-radius: 0.4rem;
-  border: 1px solid var(--border-light);
+  padding: 0.25rem;
+  font-size: 0.8rem;
+}
+
+.table-scroll {
+  overflow-x: auto;
 }
 
 .food-table {
   width: 100%;
+  min-width: 750px;
   border-collapse: collapse;
   font-size: 0.8rem;
 }
@@ -335,105 +317,108 @@ body {
 .food-table th,
 .food-table td {
   border: 1px solid var(--border-light);
-  padding: 0.3rem;
+  padding: 0.35rem;
 }
 
 .food-table th {
-  background-color: var(--bg-cream);
+  background: var(--card-grey);
 }
+
+/* Search */
 
 .search-row {
   display: flex;
   gap: 0.5rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.35rem;
 }
 
 .search-row input {
   flex: 1;
-  padding: 0.35rem 0.5rem;
-  border-radius: 0.4rem;
-  border: 1px solid var(--border-light);
+  padding: 0.35rem;
+  font-size: 0.85rem;
 }
 
 .search-note {
   font-size: 0.75rem;
   color: #6c757d;
-  margin-bottom: 0.5rem;
 }
 
 /* Custom form */
-.custom-form .form-row {
-  margin-bottom: 0.5rem;
+
+.custom-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.custom-form label {
-  display: block;
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
   font-size: 0.8rem;
-  margin-bottom: 0.2rem;
 }
 
-.custom-form input,
-.custom-form select {
-  width: 100%;
-  padding: 0.35rem 0.5rem;
-  border-radius: 0.4rem;
-  border: 1px solid var(--border-light);
+.form-row input,
+.form-row select {
+  padding: 0.35rem;
   font-size: 0.85rem;
 }
 
 .macros-row {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 0.4rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.macros-row > div {
+  flex: 1 1 90px;
 }
 
 /* Export */
+
 .export-section {
   text-align: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.75rem;
 }
 
 .export-note {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: #6c757d;
-  margin-top: 0.4rem;
 }
 
 /* Footer */
+
 .app-footer {
   text-align: center;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: #6c757d;
-  margin-top: 1rem;
+  margin-bottom: 0.5rem;
 }
 
-/* Responsive */
-@media (max-width: 900px) {
-  .dashboard {
-    grid-template-columns: minmax(0, 1fr);
-  }
+/* Status colors (for progress text, used in JS) */
 
-  .database-section {
-    grid-template-columns: minmax(0, 1fr);
-  }
+.status-met {
+  color: var(--accent-green);
+  background: var(--soft-green);
 }
 
-@media (max-width: 600px) {
-  .targets-grid {
-    grid-template-columns: minmax(0, 1fr);
+.status-pending {
+  color: var(--accent-amber);
+  background: var(--soft-yellow);
+}
+
+/* Responsive tweaks */
+
+@media (max-width: 768px) {
+  .app-header h1 {
+    font-size: 1.2rem;
   }
 
-  .progress-grid {
-    grid-template-columns: minmax(0, 1fr);
+  .meal-scroll-container {
+    max-height: 55vh;
   }
 
-  .macros-row {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .meal-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.25rem;
+  .db-card {
+    padding: 0.6rem;
   }
 }
