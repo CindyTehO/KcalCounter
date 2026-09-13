@@ -1,4 +1,3 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,99 +5,21 @@
   <title>Calorie & Macro Tracker</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="styles.css" />
-  <!-- SheetJS for Excel export -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
+
 <body>
   <div class="app-root">
+
+    <!-- HEADER -->
     <header class="app-header">
       <h1>Calorie & Macro Tracker</h1>
       <p>Weekly Meal Planner • Macros Dashboard • Excel Export</p>
     </header>
 
-    <!-- Status Banner -->
-    <section id="statusBanner" class="status-banner hidden">
-      🎉 ALL DAILY TARGETS ACCOMPLISHED!
-    </section>
-
-    <!-- Targets & Daily Progress -->
-    <section class="dashboard">
-      <div class="targets-card">
-        <h2>Daily Target Macros</h2>
-        <div class="targets-grid">
-          <div class="target-item">
-            <label>Energy (kcals)</label>
-            <input type="number" id="targetEnergy" step="1" />
-          </div>
-          <div class="target-item">
-            <label>Protein (g)</label>
-            <input type="number" id="targetProtein" step="0.1" />
-          </div>
-          <div class="target-item">
-            <label>Carbohydrates (g)</label>
-            <input type="number" id="targetCarbs" step="0.1" />
-          </div>
-          <div class="target-item">
-            <label>Fats (g)</label>
-            <input type="number" id="targetFats" step="0.1" />
-          </div>
-          <div class="target-item">
-            <label>Fiber (g)</label>
-            <input type="number" id="targetFiber" step="0.1" />
-          </div>
-        </div>
-        <button id="saveTargetsBtn" class="btn-primary">Save Targets</button>
-      </div>
-
-      <div class="progress-card">
-        <h2>Selected Day Progress</h2>
-        <p id="currentDayLabel"></p>
-        <div class="progress-grid">
-          <div class="progress-item">
-            <span>Energy (kcals)</span>
-            <div class="progress-status" id="progressEnergy"></div>
-          </div>
-          <div class="progress-item">
-            <span>Protein (g)</span>
-            <div class="progress-status" id="progressProtein"></div>
-          </div>
-          <div class="progress-item">
-            <span>Carbohydrates (g)</span>
-            <div class="progress-status" id="progressCarbs"></div>
-          </div>
-          <div class="progress-item">
-            <span>Fats (g)</span>
-            <div class="progress-status" id="progressFats"></div>
-          </div>
-          <div class="progress-item">
-            <span>Fiber (g)</span>
-            <div class="progress-status" id="progressFiber"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="toggle-card">
-        <h2>Nutrition Display Mode</h2>
-        <div class="toggle-row">
-          <label>
-            <input type="radio" name="nutritionMode" value="perServing" checked />
-            Per Serving
-          </label>
-          <label>
-            <input type="radio" name="nutritionMode" value="per100g" />
-            Per 100g
-          </label>
-        </div>
-        <p class="toggle-note">
-          Calculations always use accurate per 100g / per serving values based on your chosen input mode (grams or servings).
-        </p>
-      </div>
-    </section>
-
-    <!-- Day Selector -->
-    <section class="day-selector">
-      <h2>Weekly Meal Planner</h2>
-      <div class="day-tabs" id="dayTabs">
+    <!-- Sticky Day Tabs (D2 behavior: only sticky when planner enters view) -->
+    <div id="dayTabsWrapper" class="day-tabs-wrapper">
+      <div id="dayTabs" class="day-tabs">
         <button data-day="Mon" class="day-tab active">Mon</button>
         <button data-day="Tue" class="day-tab">Tue</button>
         <button data-day="Wed" class="day-tab">Wed</button>
@@ -107,14 +28,41 @@
         <button data-day="Sat" class="day-tab">Sat</button>
         <button data-day="Sun" class="day-tab">Sun</button>
       </div>
+    </div>
+
+    <!-- Meal Planner Scroll Container (L3 hybrid) -->
+    <section id="mealScrollContainer" class="meal-scroll-container">
+
+      <!-- Sticky Meal Header (S3-C dual sticky) -->
+      <div id="stickyMealHeader" class="sticky-meal-header"></div>
+
+      <!-- Meal Sections (collapsible + auto-collapse + slide-up) -->
+      <div id="mealsContainer" class="meals-container"></div>
+
     </section>
 
-    <!-- Meals Container -->
-    <section id="mealsContainer" class="meals-container">
-      <!-- Populated by JS: Breakfast, Lunch, Dinner, Snack/Post-Workout -->
+    <!-- Daily Progress + Targets Combined -->
+    <section class="progress-combined">
+      <h2>Daily Progress</h2>
+      <table class="combined-progress-table">
+        <thead>
+          <tr>
+            <th>Macro</th>
+            <th>Progress</th>
+            <th>Target</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Energy (kcals)</td><td id="progEnergy"></td><td id="tgtEnergy"></td></tr>
+          <tr><td>Protein (g)</td><td id="progProtein"></td><td id="tgtProtein"></td></tr>
+          <tr><td>Carbs (g)</td><td id="progCarbs"></td><td id="tgtCarbs"></td></tr>
+          <tr><td>Fats (g)</td><td id="progFats"></td><td id="tgtFats"></td></tr>
+          <tr><td>Fiber (g)</td><td id="progFiber"></td><td id="tgtFiber"></td></tr>
+        </tbody>
+      </table>
     </section>
 
-    <!-- Food Database & Search -->
+    <!-- Food Database -->
     <section class="database-section">
       <div class="db-card">
         <h2>Food Database</h2>
@@ -125,25 +73,28 @@
             <option value="all">All</option>
           </select>
         </div>
-        <table class="food-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Category</th>
-              <th>Serving Size</th>
-              <th>Calories (kcals)</th>
-              <th>Protein (g)</th>
-              <th>Carbs (g)</th>
-              <th>Fats (g)</th>
-              <th>Fiber (g)</th>
-              <th>Custom?</th>
-              <th>Remove</th>
-            </tr>
-          </thead>
-          <tbody id="foodTableBody"></tbody>
-        </table>
+        <div class="table-scroll">
+          <table class="food-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Serving Size</th>
+                <th>Kcals</th>
+                <th>Protein</th>
+                <th>Carbs</th>
+                <th>Fats</th>
+                <th>Fiber</th>
+                <th>Custom?</th>
+                <th>Remove</th>
+              </tr>
+            </thead>
+            <tbody id="foodTableBody"></tbody>
+          </table>
+        </div>
       </div>
 
+      <!-- Search -->
       <div class="db-card">
         <h2>Search Online (Open Food Facts)</h2>
         <div class="search-row">
@@ -153,23 +104,26 @@
         <p class="search-note">
           Uses Open Food Facts API. Not all items have full macro data; you can edit before adding.
         </p>
-        <table class="food-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Serving Size</th>
-              <th>Calories</th>
-              <th>Protein</th>
-              <th>Carbs</th>
-              <th>Fats</th>
-              <th>Fiber</th>
-              <th>Add</th>
-            </tr>
-          </thead>
-          <tbody id="searchResultsBody"></tbody>
-        </table>
+        <div class="table-scroll">
+          <table class="food-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Serving Size</th>
+                <th>Kcals</th>
+                <th>Protein</th>
+                <th>Carbs</th>
+                <th>Fats</th>
+                <th>Fiber</th>
+                <th>Add</th>
+              </tr>
+            </thead>
+            <tbody id="searchResultsBody"></tbody>
+          </table>
+        </div>
       </div>
 
+      <!-- Custom Add -->
       <div class="db-card">
         <h2>Add Custom Food Item</h2>
         <form id="customFoodForm" class="custom-form">
@@ -189,30 +143,15 @@
             </select>
           </div>
           <div class="form-row">
-            <label>Serving Size (e.g., 1 slice, 100g)</label>
+            <label>Serving Size</label>
             <input type="text" id="customServingSize" required />
           </div>
           <div class="form-row macros-row">
-            <div>
-              <label>Kcals</label>
-              <input type="number" id="customKcals" step="0.1" required />
-            </div>
-            <div>
-              <label>Protein (g)</label>
-              <input type="number" id="customProtein" step="0.1" required />
-            </div>
-            <div>
-              <label>Carbs (g)</label>
-              <input type="number" id="customCarbs" step="0.1" required />
-            </div>
-            <div>
-              <label>Fats (g)</label>
-              <input type="number" id="customFats" step="0.1" required />
-            </div>
-            <div>
-              <label>Fiber (g)</label>
-              <input type="number" id="customFiber" step="0.1" required />
-            </div>
+            <div><label>Kcals</label><input type="number" id="customKcals" step="0.1" required /></div>
+            <div><label>Protein</label><input type="number" id="customProtein" step="0.1" required /></div>
+            <div><label>Carbs</label><input type="number" id="customCarbs" step="0.1" required /></div>
+            <div><label>Fats</label><input type="number" id="customFats" step="0.1" required /></div>
+            <div><label>Fiber</label><input type="number" id="customFiber" step="0.1" required /></div>
           </div>
           <button type="submit" class="btn-primary">Add Custom Item</button>
         </form>
@@ -221,17 +160,14 @@
 
     <!-- Export -->
     <section class="export-section">
-      <button id="exportExcelBtn" class="btn-export">
-        Export Week's Plan to Excel
-      </button>
-      <p class="export-note">
-        Excel file will contain day-by-day meal breakdown and daily totals vs target goals.
-      </p>
+      <button id="exportExcelBtn" class="btn-export">Export Week's Plan to Excel</button>
+      <p class="export-note">Excel file will contain day-by-day meal breakdown and daily totals vs target goals.</p>
     </section>
 
     <footer class="app-footer">
       <p>Designed for GitHub Pages • Vanilla JS • LocalStorage persistence</p>
     </footer>
+
   </div>
 
   <script src="app.js"></script>
