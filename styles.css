@@ -61,7 +61,14 @@ body {
   overflow-y:auto;
   margin-bottom:0.75rem;
 }
+/* FIX: Make meal planner visible */
+.meal-section {
+  min-height: 50px;
+}
 
+.meal-table-wrapper {
+  padding: 0.5rem;
+}
 .sticky-meal-header {
   position:sticky;
   top:2.4rem;
